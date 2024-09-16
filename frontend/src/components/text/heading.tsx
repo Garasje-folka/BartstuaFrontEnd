@@ -1,8 +1,9 @@
-import { Heading1 } from "./heading.styled";
+import { Heading1, Heading3 } from "./heading.styled";
 
 interface HeadingProps {
   type: string;
   children: string | string[];
+  className?: string;
 }
 
 const HeadingTypes = {
@@ -22,14 +23,22 @@ interface HeadingComponent extends React.FC<HeadingProps> {
 }
 
 const Heading: HeadingComponent = (props) => {
-  const { children, type } = props;
+  const { children, type, className } = props;
 
   return (
     <>
-      {type === HeadingTypes.HEADING1 && <Heading1>{children}</Heading1>}
-      {type === HeadingTypes.HEADING2 && <h2>{children}</h2>}
-      {type === HeadingTypes.HEADING3 && <h3>{children}</h3>}
-      {type === HeadingTypes.HEADING4 && <h4>{children}</h4>}
+      {type === HeadingTypes.HEADING1 && (
+        <Heading1 className={className}>{children}</Heading1>
+      )}
+      {type === HeadingTypes.HEADING2 && (
+        <h2 className={className}>{children}</h2>
+      )}
+      {type === HeadingTypes.HEADING3 && (
+        <Heading3 className={className}>{children}</Heading3>
+      )}
+      {type === HeadingTypes.HEADING4 && (
+        <h4 className={className}>{children}</h4>
+      )}
     </>
   );
 };

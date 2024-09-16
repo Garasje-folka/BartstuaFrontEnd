@@ -53,5 +53,9 @@
     "4": "Tor",
     "5": "Fre",
     "6": "Lør"
-  }
+  },
+  "label_checkout": "Betaling",
+  "label_credit_card_information": "Kortinformasjon",
+  "label_drop_in_reservations": "Drop in reservasjoner",
+  "label_full_sauna_reservations": "Hel badstue reservasjoner"
 }

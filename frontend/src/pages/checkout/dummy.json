@@ -1,0 +1,13 @@
+[
+  {
+    "id": "location1",
+    "data": {
+      "name": "BartStua",
+      "capacity": 23,
+      "description": "Dette er en fin beskrivelse",
+      "imageUrl": "https://thewellsite.blob.core.windows.net/media/ysnbkxwf/the-well-finsk-sauna.jpg",
+      "dropInPrice": 199,
+      "wholeSaunaPrice": 899
+    }
+  }
+]

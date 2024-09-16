@@ -53,7 +53,8 @@ export const themeConfig = {
     contentHeight: `calc(100vh - ${headerHeight})`,
   },
   shadow: {
-    REGULAR: "0px 4px 22px rgba(0, 0, 0, 0.25)",
+    REGULAR: "0px 4px 22px rgba(0, 0, 0, 0.1)",
+    MINIMAL: "0px 2px 7px rgba(0,0,0,0.07)",
   },
   form: {
     colors: {
@@ -84,6 +85,9 @@ export const themeConfig = {
       REGULAR: "1rem",
       LARGE: "2rem",
     },
+  },
+  card: {
+    BACKGROUND_OPACITY_SUFIX: "d5",
   },
 } as const;
 

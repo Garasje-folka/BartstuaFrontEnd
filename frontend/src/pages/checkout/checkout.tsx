@@ -2,10 +2,15 @@ import { FormEvent, useState } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useTranslation } from "react-i18next";
 import { FormContainer, InputField, SubmitButton } from "../../components/form";
-import { CardBody, Card, CardHeader, CardSizes } from "../../components/card";
+import { CardHeader, CardSizes } from "../../components/card";
 import { currentUserSelector } from "../../redux/selectors";
 import { useSelector } from "react-redux";
-import { cardElementOptions, WidthRestriction } from "./checkout.styled";
+import {
+  StyledCard as Card,
+  LeftContainer,
+  RightContainer,
+  StyledHeading,
+} from "./checkout.styled";
 import { useHistory } from "react-router-dom";
 import { HOME } from "../../router/routeConstants";
 import { Notification, NotificationType } from "../../components/notification";
@@ -17,6 +22,12 @@ import {
   createBookingPaymentIntent,
 } from "../../services/paymentManagement";
 import { refreshReservationTimestamps } from "../../services/bookingManagement";
+import { CardInfoField } from "../../components/form/cardInfoField";
+import SaunaData from "./dummy.json";
+import { CheckoutCartItem } from "./checkoutCartItem";
+import { dropInReservationsSelector } from "../../redux/ducks/dropInReservations";
+import { fullSaunaReservationsSelector } from "../../redux/ducks/fullSaunaReservations";
+import { Heading } from "../../components/text";
 
 const Checkout = () => {
   const [email, setEmail] = useState<string>("");
@@ -33,6 +44,8 @@ const Checkout = () => {
   const { t } = useTranslation();
   const currentUser = useSelector(currentUserSelector);
   const history = useHistory();
+  const dropInReservations = useSelector(dropInReservationsSelector);
+  const fullSaunaReservations = useSelector(fullSaunaReservationsSelector);
 
   useEffect(() => {
     // TODO: Add support for guest users
@@ -106,36 +119,64 @@ const Checkout = () => {
 
   return (
     <Card size={CardSizes.FILL_PAGE}>
-      <CardHeader title="Checkout" />
-      <CardBody>
+      <LeftContainer>
+        <CardHeader title={t`label_checkout`} />
         <FormContainer onSubmit={handleSubmit}>
-          <WidthRestriction>
-            {(!currentUser || !currentUser.email) && (
-              <InputField
-                label={t("label_email")}
-                type="email"
-                value={email}
-                onChange={(event) => onEmailChanged(event.target.value)}
-                errorSerious={false}
-                errorText={emailError}
-              />
-            )}
-            <CardElement options={cardElementOptions} />
-            <SubmitButton
-              label="Betal"
-              disabled={!stripe || !elements || !!emailError}
+          {(!currentUser || !currentUser.email) && (
+            <InputField
+              label={t("label_email")}
+              type="email"
+              value={email}
+              onChange={(event) => onEmailChanged(event.target.value)}
+              errorSerious={false}
+              errorText={emailError}
             />
-            {paymentError && (
-              <Notification
-                heading="Betaling feilet"
-                type={NotificationType.ERROR}
-              >
-                {paymentError}
-              </Notification>
-            )}
-          </WidthRestriction>
+          )}
+          <CardInfoField label={t`label_credit_card_information`} />
+          <SubmitButton
+            label="Betal"
+            disabled={!stripe || !elements || !!emailError}
+          />
+          {paymentError && (
+            <Notification
+              heading="Betaling feilet"
+              type={NotificationType.ERROR}
+            >
+              {paymentError}
+            </Notification>
+          )}
         </FormContainer>
-      </CardBody>
+      </LeftContainer>
+      <RightContainer>
+        {dropInReservations.length > 0 && (
+          <Heading type={Heading.types.HEADING3}>
+            {t("label_drop_in_reservations")}
+          </Heading>
+        )}
+        {dropInReservations
+          .map(({ data, id }) => ({
+            ...data,
+            saunaData: SaunaData.find(({ id }) => id === data.location)?.data,
+            bookingId: id,
+          }))
+          .map(
+            ({ saunaData, bookingId }) =>
+              saunaData && <CheckoutCartItem key={bookingId} {...saunaData} />
+          )}
+        {fullSaunaReservations.length > 0 && (
+          <StyledHeading type={Heading.types.HEADING3}>
+            {t("label_full_sauna_reservations")}
+          </StyledHeading>
+        )}
+        {fullSaunaReservations
+          .map(({ data }) => ({
+            ...data,
+            saunaData: SaunaData.find(({ id }) => id === data.location)?.data,
+          }))
+          .map(
+            ({ saunaData }) => saunaData && <CheckoutCartItem {...saunaData} />
+          )}
+      </RightContainer>
     </Card>
   );
 };
